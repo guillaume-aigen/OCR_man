@@ -17,6 +17,9 @@ where the text runs down the left half of the page and continues on the right.
 > technical reference.
 
 ---
+<img width="7969" height="7969" alt="Asset 5" src="https://github.com/user-attachments/assets/a0b35357-c5b7-4b45-9cf6-b8f2d6985887" />
+
+---
 
 ## Measured results
 
