@@ -1,0 +1,29 @@
+# Virtual environment
+.venv/
+venv/
+
+# Your documents and results — never commit these.
+# Scanned books are usually copyrighted; keep them off GitHub.
+INPUT/*
+OUTPUT/*
+!INPUT/.gitkeep
+!OUTPUT/.gitkeep
+
+# Per-document cache (page images, per-page OCR JSON). Large and disposable.
+WORK/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local agent/tooling state
+.claude/

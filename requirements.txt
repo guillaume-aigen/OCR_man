@@ -1,0 +1,21 @@
+# SETUP.py installs these for you, including the CUDA build of PyTorch.
+# This file is for reference and for CI.
+
+# PyTorch — install the CUDA build from the PyTorch index, not PyPI:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+torch>=2.4
+torchvision>=0.19
+
+# OCR engine (default). Layout model + VLM recogniser.
+mineru[core]>=3.4
+
+# Document I/O and image restoration
+pymupdf>=1.24          # AGPL-3.0 — see NOTICE
+pillow>=10.0
+opencv-python>=4.9
+numpy>=1.26
+pyyaml>=6.0
+
+# Fallback OCR engine (optional, CPU-capable)
+rapidocr>=2.0
+onnxruntime>=1.17

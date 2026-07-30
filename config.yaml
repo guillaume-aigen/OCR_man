@@ -1,0 +1,97 @@
+# OCR_man settings.
+#
+# Everything here is optional -- delete a key and the built-in default applies
+# (see ocr_man/config.py for the full list). Any setting can also be overridden
+# for a single run with an environment variable, e.g. OCRMAN_LLM__ENABLED=0.
+
+render:
+  # Long edge of the image handed to the OCR model. 2000px is the sweet spot:
+  # below it small print degrades, above it costs time without gaining accuracy.
+  target_long_edge_px: 2000
+  min_dpi: 150
+  max_dpi: 400
+
+  # Re-read the pixels even when the PDF already contains a text layer.
+  # Leave this on for scanned books: mass-digitisation OCR layers are usually
+  # worse than what this pipeline produces, and silently poison the output.
+  # Turn it off to let genuinely born-digital PDFs pass through untouched.
+  force_ocr: true
+
+preprocess:
+  enabled: true
+  # auto   - restore only the pages whose quality score says they need it
+  # always - restore every page (use for uniformly poor scans)
+  # never  - hand the raw render to the engine
+  mode: auto
+  deskew: true
+  max_deskew_deg: 8.0
+  illumination_correction: true   # flatten uneven page lighting
+  clahe: true                     # local contrast for faded print
+  despeckle: true
+  crop_scan_border: true          # trim the black scanner surround
+  binarize: false                 # leave off: VLMs read greyscale better
+
+ocr:
+  # Tried in order; the first one installed wins.
+  engines: [mineru, rapidocr]
+  engine: auto                    # or: mineru / rapidocr
+  language: en
+
+  # MinerU specifics.
+  mineru_backend: hybrid-engine   # hybrid-engine | vlm-engine | pipeline
+  mineru_effort: high             # high enables figure/chart analysis
+  mineru_image_analysis: true     # describe figures in the text output
+  mineru_batch_pages: 200         # pages per engine invocation
+  mineru_model_source: huggingface
+
+  formula: true
+  table: true
+
+  # Retry near-empty pages on the next engine in the list.
+  fallback_on_low_yield: true
+  min_chars_per_page: 60
+
+layout:
+  prefer_engine_order: true       # trust MinerU's reading order...
+  validate_engine_order: true     # ...but check it for the read-across-columns bug
+  max_columns: 4
+  column_gap_ratio: 0.02
+
+assemble:
+  strip_running_heads: true       # drop repeating headers/footers/folios
+  dehyphenate: true               # rejoin words broken across a line
+  stitch_paragraphs: true         # rejoin paragraphs broken across column/page
+  detect_headings: true
+  keep_figures: true
+
+llm:
+  # Second pass that repairs residual OCR damage using a local model.
+  # Guarded: any chunk the model rewrites too heavily is discarded and the
+  # original OCR text kept, so this cannot silently invent content.
+  enabled: true
+  provider: ollama
+  base_url: http://localhost:11434
+  model: qwen3.6:35b
+  fallback_models: [mistral-small3.2:24b, qwen2.5:14b]
+  chunk_chars: 4000
+  temperature: 0.0
+  num_ctx: 8192
+  # Guard thresholds. Lower min_similarity = more permissive (riskier).
+  min_similarity: 0.72
+  min_length_ratio: 0.80
+  max_length_ratio: 1.25
+
+output:
+  markdown: true                  # <name>.md          - for LLM consumption
+  epub: true                      # <name>.epub        - for reading
+  searchable_pdf: false           # <name>_searchable.pdf - scan + invisible text
+  page_markers: true              # <!-- page 61 --> anchors in the Markdown
+  front_matter: true              # YAML header in the Markdown
+  epub_include_figures: true
+
+run:
+  resume: true                    # reuse cached page results after an interruption
+  keep_work_dir: true             # keep WORK/ so resume stays possible
+  max_pages: 0                    # 0 = all; set e.g. 20 for a quick quality check
+  workers: 8                      # CPU processes for rendering and restoration
+  verbose: true
