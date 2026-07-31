@@ -16,7 +16,7 @@ where the text runs down the left half of the page and continues on the right.
 > **Just want to run it? → [START_HERE.md](START_HERE.md).** This file is the
 > technical reference.
 
-<img width="5000" height="5000" alt="Artboard 95" src="https://github.com/user-attachments/assets/c834f8e8-973b-4644-a4b4-ef33f0e7449f" />
+<img width="800" height="697" alt="Artboard 95" src="https://github.com/user-attachments/assets/b7ccd446-aeee-4c96-8c30-8241d752c281" />
 
 ## Measured results
 
